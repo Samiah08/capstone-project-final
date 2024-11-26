@@ -1,0 +1,66 @@
+version: '3.8'
+services:
+  mysql-service:
+    image: mysql:8.0
+    container_name: mysql_container
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=mydb
+    ports:
+      - 3307:3306
+    restart: always
+  eureka-server:
+    build: ./backend-app/eureka-server/
+    container_name: eureka_container
+    ports:
+      - 8761:8761
+    restart: always
+  micro-service-app:
+    build: ./backend-app/Capstone-backend-project/
+    container_name: login-micro_service_container
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    ports:
+      - 9191:9191
+    depends_on:
+      - mysql-service
+      - eureka-server
+    restart: always
+  micro-service-app-2:
+    build: ./backend-app/FlightsDetails/
+    container_name: flights-micro_service_container
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    ports:
+      - 9292:9292
+    depends_on:
+      - mysql-service
+      - eureka-server
+    restart: always
+  micro-service-app-3:
+    build: ./backend-app/Booking/
+    container_name: booking-micro_service_container
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    ports:
+      - 9393:9494
+    depends_on:
+      - mysql-service
+      - eureka-server
+    restart: always
+  micro-service-app-4:
+    build: ./backend-app/payment/
+    container_name: payment-micro_service_container
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    ports:
+      - 9494:9494
+    depends_on:
+      - mysql-service
+      - eureka-server
+    restart: always
+  react-service:
+    build: ./frontend-app/frontend-app/
+    container_name: react_container
+    ports:
+      - 80:80

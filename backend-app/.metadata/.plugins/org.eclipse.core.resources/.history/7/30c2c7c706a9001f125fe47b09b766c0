@@ -1,0 +1,31 @@
+package com.service;
+
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.entity.Flights;
+import com.repository.FlightsRepository;
+
+@Service
+public class FlightsService {
+	
+	@Autowired
+	FlightsRepository flightsRepository;
+	
+	public String createFlights(Flights flights) {
+		Optional<Flights>result = flightsRepository.findById(flights.getFid());
+		if(result.isPresent()) {
+			return "flights details already exists";
+		}else {
+			flightsRepository.save(flights);
+			return "Flights details saved";
+		}
+	}
+	
+	public float findtheFlights(String toDestination, String toCompany) {
+		float cost = flightsRepository.findflights(toDestination, toCompany);
+		return (cost !=0.0f) ? cost : 0.0f;
+	}
+}

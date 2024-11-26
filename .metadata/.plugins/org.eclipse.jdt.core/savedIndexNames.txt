@@ -1,0 +1,4 @@
+INDEX VERSION 1.134+/Users/samihaali/Documents/Full Stack Dev course/capstone project/.metadata/.plugins/org.eclipse.jdt.core
+1865797976.index
+3453995879.index
+2434585992.index

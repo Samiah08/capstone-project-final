@@ -1,0 +1,50 @@
+package com.service;
+
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import com.entity.Booking;
+import com.entity.Payment;
+import com.model.BookingResponse;
+import com.repository.PaymentRepository;
+
+@Service
+public class PaymentService {
+
+	@Autowired
+	PaymentRepository paymentRepository;
+	
+	@Autowired
+	RestTemplate restTemplate;
+	
+	public String createPayment(Payment payment) {
+		String emailid = payment.getEmailid();
+		String paymentmethod = payment.getPaymentmethod();
+		int result = restTemplate.getForObject(
+				"http://localhost:9393/booking/findbooking/"+emailid, 
+				Integer.class);
+		if(result==-1) {
+			return "Payment cannot be met as customer details dont exist";
+		}else {
+			payment.setBookid(result);
+		}
+		try {
+			Float cost = restTemplate.getForObject(
+					"http://localhost:9393/booking/getprice/"+bookid,
+					 Float.class);
+            if (cost != null && cost > 0) {
+                payment.setPrice(cost);
+                paymentRepository.save(payment);
+                return "payment successfull";
+            } else {
+                
+                return "Flight is not available";
+            }
+	}
+	
+	
+	
+}

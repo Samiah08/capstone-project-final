@@ -1,0 +1,12 @@
+2024-11-20 21:44:12,663 [Worker-7: Loading available Gradle versions] INFO  o.e.b.c.i.u.g.PublishedGradleVersions - Gradle version information cache is out-of-date. Trying to update.
+2024-11-20 21:45:09,993 [Worker-13: Building] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.example:login-app:0.0.1-SNAPSHOT @ /Users/samihaali/Documents/Full Stack Dev course/capstone project/backend-app/login-app/pom.xml.
+2024-11-20 21:45:11,349 [Worker-13: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src/main/resources to target/classes
+2024-11-20 21:45:11,370 [Worker-13: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src/main/resources to target/classes
+2024-11-20 21:45:11,380 [Worker-13: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory /Users/samihaali/Documents/Full Stack Dev course/capstone project/backend-app/login-app/src/test/resources
+2024-11-20 21:45:12,496 [Worker-24: Updating Maven Dependencies] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.example:login-app:0.0.1-SNAPSHOT @ /Users/samihaali/Documents/Full Stack Dev course/capstone project/backend-app/login-app/pom.xml.
+2024-11-20 21:45:12,670 [Worker-17: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src/main/resources to target/classes
+2024-11-20 21:45:12,676 [Worker-17: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src/main/resources to target/classes
+2024-11-20 21:45:12,678 [Worker-17: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory /Users/samihaali/Documents/Full Stack Dev course/capstone project/backend-app/login-app/src/test/resources
+2024-11-20 21:45:13,722 [Worker-18: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src/main/resources to target/classes
+2024-11-20 21:45:13,723 [Worker-18: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src/main/resources to target/classes
+2024-11-20 21:45:13,724 [Worker-18: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory /Users/samihaali/Documents/Full Stack Dev course/capstone project/backend-app/login-app/src/test/resources
