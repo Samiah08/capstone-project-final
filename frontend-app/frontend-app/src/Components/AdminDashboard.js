@@ -3,31 +3,40 @@ import Logout from "./Logout";
 import { useNavigate } from "react-router-dom";
 
 function AdminDashboard() {
-    const navigate = useNavigate(); // Initialize navigate function
+    const navigate = useNavigate();
 
     const goToAddFlights = () => {
-        navigate("/addflights"); // Navigate to /addflights route
+        navigate("/addflights");
     };
     const goToViewFlights = () => {
-        navigate("/viewflights"); // Navigate to /addflights route
+        navigate("/viewflights");
     };
     const goToViewPrice = () => {
-        navigate("/ViewPrice"); // Navigate to /addflights route
+        navigate("/ViewPrice");
     };
 
-
     return (
-        <div>
-            <h1>Welcome to Admin Dashboard</h1><br />
-            <div>
-                <button onClick={goToAddFlights}>Add Flights</button>
-
-                <button onClick={goToViewFlights}>View All Flights</button>
-
-                <button onClick={goToViewPrice}>View Price</button>
-
+        <div className="container mt-5">
+            <div className="text-center mb-4">
+                <h1>Welcome to Admin Dashboard</h1>
+                <p className="text-muted">Manage flights and pricing from this dashboard.</p>
             </div>
-            <Logout />
+            <div className="row justify-content-center">
+                <div className="col-md-4 d-grid gap-3">
+                    <button className="btn btn-primary" onClick={goToAddFlights}>
+                        Add Flights
+                    </button>
+                    <button className="btn btn-secondary" onClick={goToViewFlights}>
+                        View All Flights
+                    </button>
+                    <button className="btn btn-success" onClick={goToViewPrice}>
+                        View Price
+                    </button>
+                </div>
+            </div>
+            <div className="mt-5 text-center">
+                <Logout />
+            </div>
         </div>
     );
 }

@@ -43,7 +43,7 @@ services:
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
     ports:
-      - 9393:9494
+      - 9393:9393
     depends_on:
       - mysql-service
       - eureka-server

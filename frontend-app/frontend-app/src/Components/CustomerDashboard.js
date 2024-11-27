@@ -5,44 +5,49 @@ import { useNavigate } from "react-router-dom";
 function CustomerDashboard() {
     let user = sessionStorage.getItem("user");
     const [fullName, setFullName] = useState('');
-    const navigate = useNavigate(); // Initialize navigate function
+    const navigate = useNavigate();
 
-    // Fetch full name from the API
     useEffect(() => {
         if (user) {
             fetch(`http://localhost:9191/login/findname/${user}`)
                 .then((response) => {
                     if (response.ok) {
-                        return response.text(); // API returns the full name as text
+                        return response.text();
                     } else {
-                        throw new Error('User not found with the logged in email ID');
+                        throw new Error('User not found with the logged-in email ID');
                     }
                 })
-                .then((data) => setFullName(data)) // Set the full name from the API response
-                .catch((error) => setFullName('User not found')); // Handle errors
+                .then((data) => setFullName(data))
+                .catch(() => setFullName('User not found'));
         }
-    }, [user]); // Run effect only when user changes
+    }, [user]);
 
-    const goToViewFlights = () => {
-        navigate("/viewflights"); // Navigate to /viewflights route
-    };
-
-    const goToViewPrice = () => {
-        navigate("/ViewPrice"); // Navigate to /viewprice route
-    };
-    const goToAddbooking = () => {
-        navigate("/AddBooking"); // Navigate to /viewprice route
-    };
+    const goToViewFlights = () => navigate("/viewflights");
+    const goToViewPrice = () => navigate("/ViewPrice");
+    const goToAddbooking = () => navigate("/AddBooking");
 
     return (
-        <div>
-            <h3>Welcome to Customer dashboard {fullName ? fullName : user}</h3><br></br>
-            <div>
-                <button onClick={goToViewFlights}>View All Flights</button>
-                <button onClick={goToViewPrice}>View Price</button>
-                <button onClick={goToAddbooking}>Book flight</button>
+        <div className="container mt-5">
+            <div className="text-center mb-4">
+                <h3>Welcome to Customer Dashboard</h3>
+                <h5 className="text-muted">{fullName ? fullName : user}</h5>
             </div>
-            <Logout />
+            <div className="row justify-content-center">
+                <div className="col-md-6 d-grid gap-3">
+                    <button className="btn btn-primary" onClick={goToViewFlights}>
+                        View All Flights
+                    </button>
+                    <button className="btn btn-secondary" onClick={goToViewPrice}>
+                        View Price
+                    </button>
+                    <button className="btn btn-success" onClick={goToAddbooking}>
+                        Book Flight
+                    </button>
+                </div>
+            </div>
+            <div className="mt-5 text-center">
+                <Logout />
+            </div>
         </div>
     );
 }

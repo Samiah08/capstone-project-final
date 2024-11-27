@@ -7,14 +7,12 @@ function ViewPrice() {
   const [company, setCompany] = useState('');
   const [price, setPrice] = useState(null);
   const [message, setMessage] = useState('');
-  const [typeofuser, setTypeOfUser] = useState('');  // User type state
+  const [typeofuser, setTypeOfUser] = useState('');  
 
-  // Set the user type when the component mounts
   useEffect(() => {
     const userType = sessionStorage.getItem("typeofuser");
-    setTypeOfUser(userType || 'guest'); // Default to 'guest' if no user type is stored
-  }, []);  // Empty dependency array ensures this runs only once when the component mounts
-
+    setTypeOfUser(userType || 'guest'); 
+  }, []);  
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -24,55 +22,79 @@ function ViewPrice() {
         company,
       });
 
-      // Check if the response is valid
       if (response.data && response.data.message) {
         setPrice(response.data.cost);
         setMessage(response.data.message);
       }
     } catch (error) {
-      // Handle error (e.g. network issues, or API issues)
       setMessage('An error occurred while fetching the price.');
       setPrice(0.0);
     }
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <h3>View Price Page</h3><br/>
-        <div>
-          <label>Destination</label>
-          <input
-            type="text"
-            name="destination"
-            value={destination}
-            onChange={(e) => setDestination(e.target.value)}
-          /><br/>
+    <div className="container mt-5">
+      <div className="card p-4 shadow-sm">
+        <h3 className="text-center mb-4">View Price Page</h3>
 
-          <label>Company</label>
-          <input
-            type="text"
-            name="company"
-            value={company}
-            onChange={(e) => setCompany(e.target.value)}
-          /><br/>
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="destination">Destination</label>
+            <input
+              type="text"
+              className="form-control"
+              id="destination"
+              name="destination"
+              value={destination}
+              onChange={(e) => setDestination(e.target.value)}
+              required
+            />
+          </div>
 
-          <input type="submit" value="View Price"/>
-          <input type="reset" value="Reset" onClick={() => { setDestination(''); setCompany(''); setPrice(null); setMessage(''); }} />
+          <div className="form-group">
+            <label htmlFor="company">Company</label>
+            <input
+              type="text"
+              className="form-control"
+              id="company"
+              name="company"
+              value={company}
+              onChange={(e) => setCompany(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="form-group d-flex justify-content-between">
+            <button type="submit" className="btn btn-primary">View Price</button>
+            <button
+              type="reset"
+              className="btn btn-secondary"
+              onClick={() => { setDestination(''); setCompany(''); setPrice(null); setMessage(''); }}
+            >
+              Reset
+            </button>
+          </div>
+        </form>
+
+        {message && (
+          <div className="mt-4">
+            <h4 className={`alert ${message.includes('error') ? 'alert-danger' : 'alert-success'}`}>
+              {message}
+            </h4>
+            {price !== null && <p><strong>Price: £{price}</strong></p>}
+          </div>
+        )}
+
+        <div className="mt-4">
+          {typeofuser === 'admin' && (
+            <Link to="/admin" className="btn btn-info btn-sm">Go to Admin Dashboard</Link>
+          )}
+          {typeofuser === 'user' && (
+            <Link to="/customer" className="btn btn-info btn-sm">Go to Customer Dashboard</Link>
+          )}
+          {typeofuser === 'guest' && <p>Please log in to access a dashboard.</p>}
         </div>
-      </form>
-
-      {message && (
-        <div>
-          <h4>{message}</h4>
-          {price !== null && <p>Price: £{price}</p>}
-        </div>
-      )}
-
-      {/* Conditional rendering for user types */}
-      {typeofuser === 'admin' && <Link to="/admin">Admin Dashboard</Link>}
-      {typeofuser === 'user' && <Link to="/customer">Customer Dashboard</Link>}
-      {typeofuser === 'guest' && <p>Please log in to access a dashboard.</p>}
+      </div>
     </div>
   );
 }

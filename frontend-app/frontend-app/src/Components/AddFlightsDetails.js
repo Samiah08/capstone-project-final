@@ -1,86 +1,123 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
 
 function AddFlightsDetails() {
-    let url = "http://localhost:9292/flight/create";
-    let [fid, setFid] = useState("");
-    let [company, setCompany] = useState("");
-    let [destination, setDestination] = useState("");
-    let [price, setPrice] = useState("");
-    let [error, setError] = useState("");
-    let [successMessage, setSuccessMessage] = useState("");
-    let navigate = useNavigate();
+    const url = "http://localhost:9292/flight/create";
+    const [fid, setFid] = useState("");
+    const [company, setCompany] = useState("");
+    const [destination, setDestination] = useState("");
+    const [price, setPrice] = useState("");
+    const [error, setError] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
+    const navigate = useNavigate();
 
-    let handleSubmit = async (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
-        // Validate if all fields are filled
-        if (fid.length === 0 || destination.length === 0 || company.length === 0 || price.length === 0) {
+        if (!fid || !company || !destination || !price) {
             setError("Please fill in all fields.");
-            setSuccessMessage(""); // Clear success message if there's an error
-        } else {
-            // Create the flight object
-            const Addflights = { fid, company, destination, price };
-            try {
-                // Send data to the server using axios POST request
-                const response = await axios.post(url, Addflights);
-                
-                // Assuming the backend returns a success message or the created flight data
-                const message = response.data.message || response.data;
-                
-                // Handle the specific error messages
-                if (message.includes("Flights details already exist")) {
-                    setError("Flights details already exist with the given Flight ID.");
-                } else if (message.includes("Same details exist")) {
-                    setError(`Same details exist with a differnt flight ID`);
-                } else if (message === "Flight details saved successfully") {
-                    setSuccessMessage("Flight added successfully!");
-                    setError(""); // Clear any errors on success
-                } else {
-                    // Catch-all for unexpected success responses
-                    setSuccessMessage(message || "Flight details saved successfully.");
-                    setError(""); // Clear any errors on success
-                }
-            } catch (error) {
-                console.error("There was an error adding the flight:", error);
-
-                // Handle unexpected errors
-                setError("An unexpected error occurred. Please try again.");
-                setSuccessMessage(""); // Clear success message if there's an error
-            }
+            setSuccessMessage("");
+            return;
         }
-    }
+
+        const Addflights = { fid, company, destination, price };
+        try {
+            const response = await axios.post(url, Addflights);
+            const message = response.data.message || response.data;
+
+            if (message.includes("Flights details already exist")) {
+                setError("Flights details already exist with the given Flight ID.");
+            } else if (message.includes("Same details exist")) {
+                setError("Same details exist with a different flight ID.");
+            } else {
+                setSuccessMessage("Flight added successfully!");
+                setError("");
+            }
+        } catch (err) {
+            console.error("Error adding flight:", err);
+            setError("An unexpected error occurred. Please try again.");
+            setSuccessMessage("");
+        }
+    };
 
     return (
-        <div>
-            {/* Display error message in red color */}
-            {error && <span style={{ color: "red" }}>{error}</span>}
+        <div className="container mt-5">
+            <div className="card p-4 shadow">
+                <h3 className="text-center mb-4">Add Flights Details</h3>
 
-            {/* Display success message */}
-            {successMessage && <span style={{ color: "green" }}>{successMessage}</span>}
+                {/* Error and Success Messages */}
+                {error && <div className="alert alert-danger">{error}</div>}
+                {successMessage && <div className="alert alert-success">{successMessage}</div>}
 
-            <h3>Add Flights Details</h3>
-            <form onSubmit={handleSubmit}>
-                <label>Flight ID</label>
-                <input type="text" name="fid" onChange={(event) => setFid(event.target.value)} /><br />
+                <form onSubmit={handleSubmit}>
+                    <div className="mb-3">
+                        <label className="form-label">Flight ID</label>
+                        <input
+                            type="text"
+                            name="fid"
+                            className="form-control"
+                            value={fid}
+                            onChange={(e) => setFid(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label className="form-label">Destination</label>
+                        <input
+                            type="text"
+                            name="destination"
+                            className="form-control"
+                            value={destination}
+                            onChange={(e) => setDestination(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label className="form-label">Company</label>
+                        <input
+                            type="text"
+                            name="company"
+                            className="form-control"
+                            value={company}
+                            onChange={(e) => setCompany(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label className="form-label">Price (£)</label>
+                        <input
+                            type="number"
+                            name="price"
+                            className="form-control"
+                            value={price}
+                            onChange={(e) => setPrice(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className="d-grid gap-2">
+                        <button type="submit" className="btn btn-primary">Add Flights</button>
+                        <button
+                            type="reset"
+                            className="btn btn-secondary"
+                            onClick={() => {
+                                setFid("");
+                                setCompany("");
+                                setDestination("");
+                                setPrice("");
+                                setError("");
+                                setSuccessMessage("");
+                            }}
+                        >
+                            Reset
+                        </button>
+                    </div>
+                </form>
 
-                <label>Destination</label>
-                <input type="text" name="destination" onChange={(event) => setDestination(event.target.value)} /><br />
-
-                <label>Company</label>
-                <input type="text" name="company" onChange={(event) => setCompany(event.target.value)} /><br />
-
-                <label>Price (£)</label>
-                <input type="number" name="price" onChange={(event) => setPrice(event.target.value)} /><br />
-
-                <input type="submit" value="Add Flights" />
-                <input type="reset" value="Reset" />
-            </form>
-            <br />
-            {/* Link to navigate back to the admin dashboard */}
-            <Link to="/admin">Admin Dashboard</Link>
+                <div className="text-center mt-4">
+                    <Link to="/admin" className="btn btn-link">Back to Admin Dashboard</Link>
+                </div>
+            </div>
         </div>
     );
 }

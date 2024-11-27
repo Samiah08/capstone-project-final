@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 
 function Payment() {
     const location = useLocation();
-    const bookingId = location.state?.bookingId; // Access the booking ID passed via state
+    const bookingId = location.state?.bookingId;
     const [formData, setFormData] = useState({
         emailid: '',
         paymentmethod: '',
     });
     const [message, setMessage] = useState('');
-    const [bookingDetails, setBookingDetails] = useState(null); // State to store booking details
-    const [price, setPrice] = useState(null); // State to store the price
-    const [fullName, setFullName] = useState(''); // State to store the full name
+    const [bookingDetails, setBookingDetails] = useState(null);
+    const [price, setPrice] = useState(null);
+    const [fullName, setFullName] = useState('');
 
-    // Auto-populate email ID and fetch full name from the API
     useEffect(() => {
         const storedEmail = sessionStorage.getItem("user");
         if (storedEmail) {
@@ -23,21 +22,17 @@ function Payment() {
                 emailid: storedEmail,
             }));
 
-            // Fetch full name using the email
             fetchFullName(storedEmail);
-
-            // Fetch booking details when the email is set
             fetchBookingDetails(storedEmail);
         }
     }, []);
 
-    // Fetch full name based on the email
     const fetchFullName = async (email) => {
         try {
             const response = await axios.get(`http://localhost:9191/login/findname/${email}`);
             if (response.data !== "User not found with the loged in email ID") {
-                setFullName(response.data); // Set the fetched full name
-                sessionStorage.setItem("fullName", response.data); // Store in sessionStorage
+                setFullName(response.data);
+                sessionStorage.setItem("fullName", response.data);
             } else {
                 setFullName("Unknown User");
             }
@@ -47,13 +42,11 @@ function Payment() {
         }
     };
 
-    // Fetch booking details based on the email
     const fetchBookingDetails = async (email) => {
         try {
             const response = await axios.get(`http://localhost:9393/booking/findbooking/${email}`);
             if (response.data !== "-1") {
-                setBookingDetails(response.data); // Set booking ID or details if found
-                // Fetch price for the booking ID
+                setBookingDetails(response.data);
                 fetchPrice(response.data);
             } else {
                 setMessage("Booking not found or server error.");
@@ -64,12 +57,11 @@ function Payment() {
         }
     };
 
-    // Fetch price based on the booking ID
     const fetchPrice = async (bookid) => {
         try {
             const response = await axios.get(`http://localhost:9393/booking/getprice/${bookid}`);
             if (response.data !== "-1") {
-                setPrice(response.data); // Set the price if found
+                setPrice(response.data);
             } else {
                 setMessage("Price not found or server error.");
             }
@@ -88,13 +80,12 @@ function Payment() {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault(); // Prevent form reload
+        e.preventDefault();
         try {
             const response = await axios.post('http://localhost:9494/payment/create', formData);
-
             if (response.data === "Payment successful") {
                 setMessage("Payment successful");
-                localStorage.setItem("authenticated", "true"); // Optional: Persist auth state
+                localStorage.setItem("authenticated", "true");
             } else {
                 setMessage("Payment has already been made for this booking ID.");
             }
@@ -105,76 +96,80 @@ function Payment() {
     };
 
     return (
-        <div>
-            <h1>Payment Completion Page</h1>
-            <br />
-    
-            {/* Display Booking Details, Price, and Full Name together */}
-            <div>
+        <div className="container mt-5">
+            <div className="card p-4 shadow">
+                <h1 className="text-center mb-4">Payment Completion</h1>
+
                 {bookingDetails && price !== null && (
-                    <>
-                        <h4>Please proceed payment for</h4>
-                        <h4>Booking ID: {bookingDetails}</h4>
-                        <h4>Price: £ {price}</h4>
-                    </>
+                    <div className="mb-4">
+                        <h4>Please proceed with payment for the following booking:</h4>
+                        <p><strong>Booking ID:</strong> {bookingDetails}</p>
+                        <p><strong>Price:</strong> £ {price}</p>
+                    </div>
                 )}
-                {fullName && <h4>Full Name: {fullName}</h4>}
-            </div>
-    
-            {/* Display a message if booking details or price could not be fetched */}
-            {!bookingDetails && bookingId && (
-                <div>
-                    <h4>Booking ID: {bookingId} could not be retrieved.</h4>
-                </div>
-            )}
-            <div>
+                {fullName && <h4><strong>Full Name:</strong> {fullName}</h4>}
+
+                {!bookingDetails && bookingId && (
+                    <div className="alert alert-warning">
+                        <h4>Booking ID: {bookingId} could not be retrieved.</h4>
+                    </div>
+                )}
+
                 <form onSubmit={handleSubmit}>
-                    <label>Email ID</label>
-                    <input
-                        type="email"
-                        name="emailid"
-                        value={formData.emailid}
-                        onChange={handleChange}
-                        required
-                    />
-                    <br />
-                    <label>Payment Method</label>
-                    <select
-                        name="paymentmethod"
-                        value={formData.paymentmethod}
-                        onChange={handleChange}
-                        required
-                    >
-                        <option value="" disabled>
-                            -- Select Payment Method --
-                        </option>
-                        <option value="Paypal">Paypal</option>
-                        <option value="Apple Pay">Apple Pay</option>
-                        <option value="Google Pay">Google Pay</option>
-                        <option value="Credit card">Credit card</option>
-                        <option value="Debit card">Debit card</option>
-                    </select>
-                    <br />
-                    <input type="submit" value="Click here to pay" />
-                    <input
-                        type="reset"
-                        value="Reset"
-                        onClick={() => setFormData({ emailid: '', paymentmethod: '' })}
-                    />
+                    <div className="mb-3">
+                        <label className="form-label">Email ID</label>
+                        <input
+                            type="email"
+                            name="emailid"
+                            className="form-control"
+                            value={formData.emailid}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label className="form-label">Payment Method</label>
+                        <select
+                            name="paymentmethod"
+                            className="form-select"
+                            value={formData.paymentmethod}
+                            onChange={handleChange}
+                            required
+                        >
+                            <option value="" disabled>-- Select Payment Method --</option>
+                            <option value="Paypal">Paypal</option>
+                            <option value="Apple Pay">Apple Pay</option>
+                            <option value="Google Pay">Google Pay</option>
+                            <option value="Credit card">Credit card</option>
+                            <option value="Debit card">Debit card</option>
+                        </select>
+                    </div>
+                    <div className="d-grid gap-2 mb-3">
+                        <button type="submit" className="btn btn-primary">Pay Now</button>
+                        <button
+                            type="reset"
+                            className="btn btn-secondary"
+                            onClick={() => setFormData({ emailid: '', paymentmethod: '' })}
+                        >
+                            Reset
+                        </button>
+                    </div>
                 </form>
-                <br />
+
                 {message && (
-                    <div style={{ color: message === "Payment successful" ? 'green' : 'red' }}>
+                    <div className={`alert ${message === "Payment successful" ? 'alert-success' : 'alert-danger'}`}>
                         {message}
                     </div>
                 )}
+
+                {message === "Payment successful" ? (
+                    <Link to="/customer" className="btn btn-link">Go to Customer Dashboard</Link>
+                ) : (
+                    <Link to="/logout" className="btn btn-link">Log Out</Link>
+                )}
             </div>
-            {message === "Payment successful" && <a href="/customer">Customer Dashboard</a>}
-            {message !== "Payment successful" && <a href="/logout">Log Out</a>}
         </div>
     );
-    
-    
 }
 
 export default Payment;

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
 function AddBooking() {
@@ -17,7 +16,6 @@ function AddBooking() {
     const [showPaymentButton, setShowPaymentButton] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
-    // Auto-populate email ID from sessionStorage
     useEffect(() => {
         const storedEmail = sessionStorage.getItem("user");
         if (storedEmail) {
@@ -51,30 +49,22 @@ function AddBooking() {
             return false;
         }
 
-        setErrorMessage(""); // Clear errors if validation passes
+        setErrorMessage("");
         return true;
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault(); // Prevent page reload
+        e.preventDefault();
 
-        if (!validateDates()) {
-            return; // Exit if validation fails
-        }
+        if (!validateDates()) return;
 
         try {
             const response = await axios.post("http://localhost:9393/booking/create", formData);
-
             const result = response.data;
 
             if (response.status === 200) {
-                if (result.cost > 0) {
-                    setSuccessMessage(result.message); // Display the success message
-                    setShowPaymentButton(true); // Show the payment button
-                } else {
-                    setSuccessMessage(result.message); // Display message even for cost = 0
-                    setShowPaymentButton(false); // Hide payment button
-                }
+                setSuccessMessage(result.message);
+                setShowPaymentButton(result.cost > 0);
             } else {
                 setSuccessMessage("An error occurred while processing your request.");
                 setShowPaymentButton(false);
@@ -86,96 +76,121 @@ function AddBooking() {
         }
     };
 
-    const goToPayment = () => {
-        navigate("/Payment"); // Navigate to Payment page
-    };
+    const goToPayment = () => navigate("/Payment");
 
     return (
-        <div>
-            <h3>Flight Booking</h3>
-            <br />
-            <div>
-                <form onSubmit={handleSubmit}>
-                    <label>Email ID</label>
-                    <input
-                        type="email"
-                        name="emailid"
-                        value={formData.emailid}
-                        onChange={handleChange}
-                        readOnly // Make the field read-only since it's auto-filled
-                        required
-                    />
-                    <br />
-                    <label>Destination</label>
-                    <input
-                        type="text"
-                        name="destination"
-                        value={formData.destination}
-                        onChange={handleChange}
-                        required
-                    />
-                    <br />
-                    <label>Company</label>
-                    <input
-                        type="text"
-                        name="company"
-                        value={formData.company}
-                        onChange={handleChange}
-                        required
-                    />
-                    <br />
-                    <label>Depart Date</label>
-                    <input
-                        type="date"
-                        name="departdate"
-                        value={formData.departdate}
-                        onChange={handleChange}
-                        required
-                    />
-                    <br />
-                    <label>Return Date</label>
-                    <input
-                        type="date"
-                        name="returndate"
-                        value={formData.returndate}
-                        onChange={handleChange}
-                        required
-                    />
-                    <br />
+        <div className="container mt-5">
+            <div className="card p-4 shadow">
+                <h3 className="text-center">Flight Booking</h3>
+                <form onSubmit={handleSubmit} className="mt-4">
+                    <div className="mb-3">
+                        <label className="form-label">Email ID</label>
+                        <input
+                            type="email"
+                            name="emailid"
+                            className="form-control"
+                            value={formData.emailid}
+                            onChange={handleChange}
+                            readOnly
+                            required
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label className="form-label">Destination</label>
+                        <input
+                            type="text"
+                            name="destination"
+                            className="form-control"
+                            value={formData.destination}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label className="form-label">Company</label>
+                        <input
+                            type="text"
+                            name="company"
+                            className="form-control"
+                            value={formData.company}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label className="form-label">Depart Date</label>
+                        <input
+                            type="date"
+                            name="departdate"
+                            className="form-control"
+                            value={formData.departdate}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label className="form-label">Return Date</label>
+                        <input
+                            type="date"
+                            name="returndate"
+                            className="form-control"
+                            value={formData.returndate}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
 
-                    {/* Display validation error messages */}
-                    {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+                    {errorMessage && (
+                        <div className="alert alert-danger">{errorMessage}</div>
+                    )}
 
-                    <button type="submit">Submit</button>
-                    <input
-                        type="reset"
-                        value="Reset"
-                        onClick={() => {
-                            setFormData({
-                                emailid: sessionStorage.getItem("user") || "",
-                                destination: "",
-                                company: "",
-                                departdate: "",
-                                returndate: "",
-                            });
-                            setSuccessMessage("");
-                            setErrorMessage("");
-                            setShowPaymentButton(false);
-                        }}
-                    />
+                    <div className="d-grid gap-2">
+                        <button type="submit" className="btn btn-primary">
+                            Submit
+                        </button>
+                        <button
+                            type="reset"
+                            className="btn btn-secondary"
+                            onClick={() => {
+                                setFormData({
+                                    emailid: sessionStorage.getItem("user") || "",
+                                    destination: "",
+                                    company: "",
+                                    departdate: "",
+                                    returndate: "",
+                                });
+                                setSuccessMessage("");
+                                setErrorMessage("");
+                                setShowPaymentButton(false);
+                            }}
+                        >
+                            Reset
+                        </button>
+                    </div>
                 </form>
+
+                {successMessage && (
+                    <div className="alert alert-success mt-4">
+                        {successMessage}
+                        {showPaymentButton && (
+                            <button
+                                onClick={goToPayment}
+                                className="btn btn-success mt-3 d-block w-100"
+                            >
+                                Proceed to Payment
+                            </button>
+                        )}
+                    </div>
+                )}
+
+                {!showPaymentButton && (
+                    <div className="mt-4 text-center">
+                        <Link to="/customer" className="btn btn-link">
+                            Back to Dashboard
+                        </Link>
+                    </div>
+                )}
             </div>
-
-            {/* Display Success Message and Payment Button */}
-            {successMessage && (
-                <div>
-                    <p>{successMessage}</p>
-                    {showPaymentButton && <button onClick={goToPayment}>Payment</button>}
-                </div>
-            )}
-
-            {/* Conditionally Render Customer Dashboard Link */}
-            {!showPaymentButton && <Link to="/customer">Customer Dashboard</Link>}
         </div>
     );
 }

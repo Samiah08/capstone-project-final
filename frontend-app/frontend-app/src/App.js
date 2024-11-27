@@ -10,6 +10,8 @@ import AddFlightsDetails from './Components/AddFlightsDetails';
 import ViewPrice from './Components/ViewPrice';
 import AddBooking from './Components/AddBooking';
 import Payment from './Components/Payment';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 function App() {
   return (
@@ -18,8 +20,8 @@ function App() {
      {/* <BrowserRouter> */}
      <MemoryRouter>
       <Routes>
-        <Route path='/' element={<Login/>}></Route>
-        <Route path='/logout' element={<Logout/>}></Route>
+       <Route path='/' element={<Login/>}></Route> 
+       <Route path='/logout' element={<Logout/>}></Route>
         <Route path='/signup' element={<SignUp/>}></Route>
         <Route path='/customer' element={<CustomerDashboard/>}></Route>
         <Route path='/admin' element={<AdminDashboard/>}></Route>
